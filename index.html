@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>CYBER QUEST TODO - Final Ver.</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="panel">
+        <h2>PLAYER STATUS</h2>
+        
+        <div class="status-box">
+            <input type="text" id="playerName" class="profile-name-input" placeholder="勇者まろぬす" onchange="saveGameData()">
+            <div class="level-text">PLAYER RANK: <span id="levelVal">1</span></div>
+            <div class="xp-container">
+                <div class="xp-bar" id="xpBar"></div>
+                <div class="xp-info"><span id="xpVal">0</span> / <span id="xpMax">100</span> XP</div>
+            </div>
+            <div class="weekly-goal-area">
+                <label class="weekly-label">TARGET (毎週月曜リセット):</label>
+                <textarea id="weeklyGoal" class="weekly-input" placeholder="今週の目標..." onchange="saveGameData()"></textarea>
+            </div>
+            <div class="reward-box-btn" onclick="openInventoryModal()">
+                🎁 REWARD BOX (所持品)
+            </div>
+        </div>
+
+        <div id="dailySection" class="daily-section">
+            <h3 class="daily-head">
+                <span>⚡ DAILY MISSIONS</span>
+                <span class="streak-counter" id="streakDisplay">連続 0日目</span>
+            </h3>
+            <div id="dailyList"></div>
+        </div>
+
+        <button class="btn-achievement" onclick="openModal()">🏆 勲章リスト (実績)</button>
+    </div>
+
+    <div class="panel">
+        <h2>QUEST BOARD</h2>
+        
+        <div class="quest-board-layout">
+            
+            <div class="quest-col">
+                <div class="col-header special">
+                    <span class="col-title">SPECIAL REQUESTS</span>
+                    <button class="btn-create-quest" onclick="openCreateQuestModal()">＋ 新規作成</button>
+                </div>
+                <div id="devQuestList"></div>
+                <button class="btn-archive" onclick="openArchivedQuestsModal()">📂 達成済みクエスト</button>
+            </div>
+
+            <div class="quest-col">
+                <div class="col-header self">
+                    <span class="col-title">SELF TASK</span>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="taskInput" placeholder="タスクを入力...">
+                    <button id="addBtn" onclick="addTask()">追加</button>
+                </div>
+                <ul id="taskList" class="task-list"></ul>
+                <button class="btn-archive" onclick="openArchivedTasksModal()">📂 達成済みタスク</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="notification" onclick="openModal()">🏆 実績解除！確認する</div>
+
+<div class="modal-overlay" id="achieveModal">
+    <div class="modal-box">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h3>ACHIEVEMENTS</h3>
+        <p>「NEW」をクリックして経験値を獲得せよ！</p>
+        <div id="achieveContainer"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="rewardSelectModal">
+    <div class="modal-box" style="border-color: var(--item-color);">
+        <h3 style="color: var(--item-color);">🎉 CONGRATULATIONS! 🎉</h3>
+        <p>3日連続デイリークリア達成！<br>ご褒美を1つ選んでください。</p>
+        <div class="reward-card" onclick="claimReward('ticket500')">
+            <span class="reward-name">🎟 500円引換補助券 (5枚で500円)</span> <span>選択</span>
+        </div>
+        <div class="reward-card" onclick="claimReward('gameTime')">
+            <span class="reward-name">🎮 ゲーム時間30分延長チケット</span> <span>選択</span>
+        </div>
+        <div class="reward-card" onclick="claimReward('bathPass')">
+            <span class="reward-name">🛁 お風呂掃除パスチケット</span> <span>選択</span>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="inventoryModal">
+    <div class="modal-box" style="border-color: var(--item-color);">
+        <span class="close-modal" onclick="closeInventoryModal()">&times;</span>
+        <h3 style="color: var(--item-color);">🎁 REWARD BOX</h3>
+        <p>獲得したアイテム一覧</p>
+        <div id="inventoryContainer" style="text-align:left; margin-top:20px;"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="createQuestModal">
+    <div class="modal-box" style="border-color: #e94560;">
+        <span class="close-modal" onclick="closeCreateQuestModal()">&times;</span>
+        <h3 style="color: #e94560;">📜 新規依頼書の発行</h3>
+        <div class="quest-form">
+            <div class="form-group">
+                <label class="form-label">クエスト名 (必須)</label>
+                <input type="text" id="newQuestTitle" class="form-input" placeholder="例：部屋の大掃除">
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="flex:1;">
+                    <label class="form-label">難易度</label>
+                    <select id="newQuestRank" class="form-input">
+                        <option>★1</option><option>★2</option><option>★3</option><option>★4</option><option>★5</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex:1;">
+                    <label class="form-label">報酬XP</label>
+                    <input type="number" id="newQuestXP" class="form-input" value="100">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="flex:1;">
+                    <label class="form-label">依頼主</label>
+                    <input type="text" id="newQuestClient" class="form-input" value="自分">
+                </div>
+                <div class="form-group" style="flex:1;">
+                    <label class="form-label">制限時間/条件</label>
+                    <input type="text" id="newQuestLimit" class="form-input" value="なし">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">依頼詳細・説明文</label>
+                <textarea id="newQuestDesc" class="form-input" rows="3" placeholder="詳細を入力..."></textarea>
+            </div>
+            <button class="btn-submit-quest" onclick="submitNewQuest()">依頼書を発行する</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="archivedQuestsModal">
+    <div class="modal-box" style="border-color: #aaa;">
+        <span class="close-modal" onclick="document.getElementById('archivedQuestsModal').style.display='none'">&times;</span>
+        <h3 style="color: #aaa;">📂 達成済みクエスト (ARCHIVE)</h3>
+        <div id="archivedQuestsContainer" style="text-align:left; max-height:400px; overflow-y:auto;"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="archivedTasksModal">
+    <div class="modal-box" style="border-color: #aaa;">
+        <span class="close-modal" onclick="document.getElementById('archivedTasksModal').style.display='none'">&times;</span>
+        <h3 style="color: #aaa;">📂 達成済みタスク (ARCHIVE)</h3>
+        <div id="archivedTasksContainer" style="text-align:left; max-height:400px; overflow-y:auto;"></div>
+    </div>
+</div>
+
+<script src="achievements.js"></script>
+<script src="daily_quests.js"></script>
+<script src="dev_quests.js"></script>
+<script src="main.js"></script>
+
+<div style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;">
+    <button onclick="resetAllData()" style="background: #ff0000; color: white; border: 2px solid white; padding: 10px 15px; font-weight: bold; cursor: pointer;">⚠ データ全消去</button>
+</div>
+<script>
+    function resetAllData() { if(confirm("【開発用】データを全消去しますか？")) { localStorage.clear(); location.reload(); } }
+</script>
+
+</body>
+</html>
