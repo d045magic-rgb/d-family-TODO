@@ -5,7 +5,7 @@
 const baseDailyQuests = [
     { id: 'd1', text: "ログインボーナス（クリックで受取）", xp: 10, completed: false },
     { id: 'd2', text: "タスクを1つ完了する", xp: 30, completed: false },
-    { id: 'd3', text: "ストレッチ / 運動をする", xp: 50, completed: false }
+    { id: 'd3', text: "風呂掃除/ご飯作り/皿洗いのどれかをする", xp: 50, completed: false }
 ];
 
 // 2. 今日のクエストを作成する関数（重要！）
