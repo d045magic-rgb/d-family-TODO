@@ -27,7 +27,6 @@ window.onload = function() {
             myDailyQuests = [
                 { id: 'd1', text: "ログインボーナス", xp: 10, completed: false },
                 { id: 'd2', text: "タスクを1つ完了", xp: 30, completed: false },
-                { id: 'd3', text: "運動する", xp: 50, completed: false }
             ];
         }
     }
@@ -233,12 +232,12 @@ function checkDate() {
             
             const weeklyQuest = {
                 id: "sys_weekly_" + Date.now(),
-                title: "【定期】今週の目標設定",
+                title: "【定期】今週の目標を設定しよう！",
                 rank: "★1",
-                client: "システム",
+                client: "ギルドマスター",
                 rewardXP: 50,
                 limit: "今週中",
-                desc: "左上のプロフィール欄にある「TARGET」に、今週の目標を入力せよ。"
+                desc: "左上のプロフィール欄にある「TARGET」に、今週の目標を入力するぶ！"
             };
             customDevQuests.push(weeklyQuest);
             alert("新しい週が始まりました！\n今週の目標をリセットしました。");
