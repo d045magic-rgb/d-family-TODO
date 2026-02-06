@@ -34,4 +34,10 @@ const masterAchievements = [
         xpReward: 300,
         condition: (tasks, total) => tasks.some(t => t.text.includes("筋トレ") && t.completed)
     }
+    {
+        id: 5,
+        text: "息抜き大事：「ゲーム」を含むタスクを完了",
+        xpReward: 300,
+        condition: (tasks, total) => tasks.some(t => t.text.includes("ゲーム") && t.completed)
+    }
 ];
